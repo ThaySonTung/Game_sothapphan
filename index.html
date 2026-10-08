@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đại Chiến Đảo Thập Phân — Học Toán Với Thầy Sơn Tùng</title>
+    <style>
+        :root {
+            --navy: #232b3e;   /* Xanh Than Đậm phiếu bài tập */
+            --amber: #c1791a;  /* Nâu Cam Đất điểm nhấn */
+            --blue: #3b7dda;   /* Xanh Dương bài giảng */
+            --green: #27ae60;  /* Xanh Lá mẹo tính */
+            --red: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #1a202c 0%, #232b3e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .game-card {
+            background: white;
+            width: 95%;
+            max-width: 750px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            border-top: 8px solid var(--amber);
+            text-align: center;
+            position: relative;
+        }
+
+        .brand-header {
+            color: var(--navy);
+            font-size: 1.15rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .brand-header span { color: var(--amber); }
+
+        /* BẢNG HƯỚNG DẪN LUẬT CHƠI */
+        .rules-container {
+            background: #f8f9fa;
+            border: 2px dashed var(--blue);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .rules-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 12px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .rule-card {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--blue);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .rule-card.r1 { border-left-color: var(--blue); }
+        .rule-card.r2 { border-left-color: var(--amber); }
+        .rule-card.r3 { border-left-color: var(--green); }
+        .rule-card.r4 { border-left-color: var(--red); background: #fdf2e9; }
+
+        .rule-card h4 { font-size: 0.95rem; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+        .rule-card p { font-size: 0.85rem; color: #555; line-height: 1.3; }
+
+        .round-badge {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .timer-box {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--red);
+            background: #fdf2e9;
+            display: inline-block;
+            padding: 6px 30px;
+            border-radius: 30px;
+            margin: 15px 0;
+            border: 3px solid var(--red);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+        }
+
+        .question-box {
+            font-size: 2.6rem;
+            font-weight: 900;
+            color: var(--navy);
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 15px 0 25px 0;
+            border: 3px dashed var(--blue);
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-opt {
+            background: var(--navy);
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .btn-opt:hover {
+            background: var(--amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(193, 121, 26, 0.4);
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #f1f2f6;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .score-box { color: var(--green); }
+        .combo-box { color: var(--amber); }
+
+        .btn-start {
+            background: var(--amber);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 900;
+            padding: 16px 45px;
+            border: none;
+            border-radius: 35px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(193, 121, 26, 0.5);
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-start:hover { transform: scale(1.05); background: #a66513; }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <div class="brand-header">📐 HỌC TOÁN VỚI <span>THẦY SƠN TÙNG</span></div>
+    
+    <!-- MÀN HÌNH BẮT ĐẦU VỚI BẢNG HƯỚNG DẪN -->
+    <div id="start-screen">
+        <h1 style="color: var(--navy); margin: 10px 0 5px 0; font-size: 2.2rem;">🏴‍☠️ ĐẠI CHIẾN ĐẢO THẬP PHÂN</h1>
+        
+        <!-- KHỐI HƯỚNG DẪN CẢNH BÁO CHO HỌC SINH -->
+        <div class="rules-container">
+            <div class="rules-title">📜 LUẬT THI ĐẤU (10 PHÚT LIÊN TỤC)</div>
+            <div class="rules-grid">
+                <div class="rule-card r1">
+                    <h4>Vòng 1 (Phút 10 - 7): Biến Hóa Dấu Phẩy</h4>
+                    <p>Chia nhẩm cơ bản. Trả lời đúng nhận <b>+10 điểm</b>.</p>
+                </div>
+                <div class="rule-card r2">
+                    <h4>Vòng 2 (Phút 7 - 4): Bẫy Số 0 Bí Mật</h4>
+                    <p>Cần thêm chữ số 0 khi dịch phẩy. Đúng nhận <b>+20 điểm</b>.</p>
+                </div>
+                <div class="rule-card r3">
+                    <h4>Vòng 3 (Phút 4 - 2): Truy Tìm Kho Báu</h4>
+                    <p>Mẹo chia nhẩm cho 0,1; 0,01; 0,5... Đúng nhận <b>+30 điểm</b>.</p>
+                </div>
+                <div class="rule-card r4">
+                    <h4>🚨 Vòng 4 (2 Phút Cuối): SINH TỒN</h4>
+                    <p>Đúng nhận <b>+50 điểm</b>. Nhưng trả lời SAI sẽ bị <b>TRỪ 20 điểm</b>!</p>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 12px; font-weight: 700; color: var(--amber); font-size: 0.9rem;">
+                🔥 Trả lời đúng liên tiếp để tích lũy điểm Combo thưởng!
+            </p>
+        </div>
+
+        <button class="btn-start" onclick="startGame()">🚀 BẮT ĐẦU THI ĐẤU</button>
+    </div>
+
+    <!-- MÀN HÌNH CHƠI GAME -->
+    <div id="game-screen" style="display: none;">
+        <div id="round-badge" class="round-badge">VÒNG 1: BIẾN HÓA DẤU PHẨY</div>
+        <br>
+        <div class="timer-box" id="timer">10:00</div>
+        
+        <div class="question-box" id="question">4,2 : 0,7 = ?</div>
+        
+        <div class="options-grid" id="options">
+            <!-- Đáp án xáo trộn -->
+        </div>
+
+        <div class="status-bar">
+            <div class="combo-box" id="combo-display">🔥 Combo: x0</div>
+            <div class="score-box">🏆 Điểm: <span id="score">0</span></div>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH KẾT THÚC -->
+    <div id="end-screen" style="display: none;">
+        <h1 style="color: var(--amber); font-size: 2.5rem; margin-bottom: 10px;">🏆 HOÀN THÀNH THỬ THÁCH!</h1>
+        <p style="font-size: 1.3rem; color: var(--navy); margin-bottom: 20px;">Chúc mừng các em đã hoàn thành xuất sắc trận đấu!</p>
+        <div style="font-size: 3.2rem; font-weight: 900; color: var(--green); margin-bottom: 30px;" id="final-score">0 ĐIỂM</div>
+        <button class="btn-start" onclick="location.reload()">🔄 TRẬN ĐẤU MỚI</button>
+    </div>
+</div>
+
+<script>
+    const round1Questions = [
+        { q: "4,2 : 0,7 = ?", opts: ["6", "0,6", "60", "0,06"], a: "6" },
+        { q: "0,35 : 0,5 = ?", opts: ["0,7", "7", "0,07", "70"], a: "0,7" },
+        { q: "1,44 : 0,12 = ?", opts: ["12", "1,2", "120", "0,12"], a: "12" },
+        { q: "0,08 : 0,02 = ?", opts: ["4", "0,4", "40", "0,04"], a: "4" },
+        { q: "2,7 : 0,3 = ?", opts: ["9", "0,9", "90", "0,09"], a: "9" },
+        { q: "0,48 : 0,6 = ?", opts: ["0,8", "8", "0,08", "80"], a: "0,8" },
+        { q: "0,81 : 0,9 = ?", opts: ["0,9", "9", "0,09", "90"], a: "0,9" },
+        { q: "6,3 : 0,7 = ?", opts: ["9", "0,9", "90", "0,09"], a: "9" },
+        { q: "0,56 : 0,8 = ?", opts: ["0,7", "7", "0,07", "70"], a: "0,7" },
+        { q: "3,6 : 0,6 = ?", opts: ["6", "0,6", "60", "0,06"], a: "6" }
+    ];
+
+    const round2Questions = [
+        { q: "7,2 : 0,09 = ?", opts: ["80", "8", "0,8", "800"], a: "80" },
+        { q: "1,5 : 0,03 = ?", opts: ["50", "5", "0,5", "500"], a: "50" },
+        { q: "0,6 : 0,15 = ?", opts: ["4", "0,4", "40", "0,04"], a: "4" },
+        { q: "12,5 : 0,25 = ?", opts: ["50", "5", "500", "0,5"], a: "50" },
+        { q: "3,6 : 0,04 = ?", opts: ["90", "9", "0,9", "900"], a: "90" },
+        { q: "0,8 : 0,016 = ?", opts: ["50", "5", "500", "0,5"], a: "50" },
+        { q: "2,4 : 0,06 = ?", opts: ["40", "4", "0,4", "400"], a: "40" },
+        { q: "0,9 : 0,015 = ?", opts: ["60", "6", "0,6", "600"], a: "60" },
+        { q: "4,8 : 0,08 = ?", opts: ["60", "6", "0,6", "600"], a: "60" }
+    ];
+
+    const round3Questions = [
+        { q: "8,5 : 0,1 = ?", opts: ["85", "0,85", "8,5", "850"], a: "85" },
+        { q: "3,2 : 0,5 = ?", opts: ["6,4", "1,6", "64", "0,64"], a: "6,4" },
+        { q: "0,45 : 0,01 = ?", opts: ["45", "4,5", "450", "0,45"], a: "45" },
+        { q: "1,8 : 0,25 = ?", opts: ["7,2", "0,72", "72", "4,5"], a: "7,2" },
+        { q: "6,4 : 0,1 = ?", opts: ["64", "6,4", "0,64", "640"], a: "64" },
+        { q: "4,2 : 0,5 = ?", opts: ["8,4", "2,1", "84", "0,84"], a: "8,4" },
+        { q: "0,72 : 0,01 = ?", opts: ["72", "7,2", "720", "0,72"], a: "72" }
+    ];
+
+    let currentRound = 1;
+    let score = 0;
+    let combo = 0;
+    let timeLeft = 600;
+    let timerInterval;
+    let activeQuestions = [];
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playTone(freq, duration, type="square") {
+        try {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+    }
+
+    function soundCorrect() {
+        playTone(523.25, 0.1);
+        setTimeout(() => playTone(659.25, 0.15), 100);
+        setTimeout(() => playTone(783.99, 0.2), 200);
+    }
+
+    function soundWrong() {
+        playTone(200, 0.15, "sawtooth");
+        setTimeout(() => playTone(150, 0.2, "sawtooth"), 150);
+    }
+
+    let bgMusicInterval;
+    function startBgMusic() {
+        const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63];
+        let noteIdx = 0;
+        bgMusicInterval = setInterval(() => {
+            let speed = currentRound === 4 ? 200 : 400; // Tăng tốc nhạc ở vòng Sinh Tồn
+            playTone(notes[noteIdx], 0.1, "sine");
+            noteIdx = (noteIdx + 1) % notes.length;
+        }, 400);
+    }
+
+    function startGame() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        document.getElementById("start-screen").style.display = "none";
+        document.getElementById("game-screen").style.display = "block";
+        
+        startTimer();
+        startBgMusic();
+        loadRound(1);
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            let min = Math.floor(timeLeft / 60);
+            let sec = timeLeft % 60;
+            document.getElementById("timer").innerText = 
+                `${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`;
+            
+            if (timeLeft === 420 && currentRound === 1) loadRound(2);
+            if (timeLeft === 180 && currentRound === 2) loadRound(3);
+            if (timeLeft === 120 && currentRound === 3) loadRound(4); // 2 phút cuối vào Vòng Sinh Tồn
+
+            if (timeLeft <= 0) endGame();
+        }, 1000);
+    }
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function loadRound(r) {
+        currentRound = r;
+        const badge = document.getElementById("round-badge");
+        if (r === 1) { 
+            badge.innerText = "VÒNG 1: BIẾN HÓA DẤU PHẨY (+10 ĐIỂM)"; 
+            activeQuestions = shuffle([...round1Questions]); 
+        }
+        if (r === 2) { 
+            badge.innerText = "VÒNG 2: BẪY SỐ 0 BÍ MẬT (+20 ĐIỂM)"; 
+            activeQuestions = shuffle([...round2Questions]); 
+            badge.style.background = "var(--amber)"; 
+        }
+        if (r === 3) { 
+            badge.innerText = "VÒNG 3: TRUY TÌM KHO BÁU (+30 ĐIỂM)"; 
+            activeQuestions = shuffle([...round3Questions]); 
+            badge.style.background = "var(--green)"; 
+        }
+        if (r === 4) { 
+            badge.innerText = "🚨 VÒNG 4: SINH TỒN (+50 ĐIỂM | SAI -20 ĐIỂM)"; 
+            activeQuestions = shuffle([...round1Questions, ...round2Questions, ...round3Questions]); 
+            badge.style.background = "var(--red)"; 
+        }
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        if (activeQuestions.length === 0) {
+            let source = currentRound === 1 ? round1Questions : currentRound === 2 ? round2Questions : round3Questions;
+            activeQuestions = shuffle([...source]);
+        }
+
+        let q = activeQuestions.pop();
+
+        document.getElementById("question").innerText = q.q;
+        let optContainer = document.getElementById("options");
+        optContainer.innerHTML = "";
+        
+        let shuffledOpts = shuffle([...q.opts]);
+
+        shuffledOpts.forEach(opt => {
+            let btn = document.createElement("button");
+            btn.className = "btn-opt";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, q.a, btn);
+            optContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected, correct, btn) {
+        if (selected === correct) {
+            soundCorrect();
+            combo++;
+            let basePoints = currentRound === 1 ? 10 : currentRound === 2 ? 20 : currentRound === 3 ? 30 : 50;
+            let points = basePoints + (combo > 2 ? 5 : 0);
+            score += points;
+            btn.style.background = "var(--green)";
+        } else {
+            soundWrong();
+            combo = 0;
+            if (currentRound === 4) score = Math.max(0, score - 20); // Trừ 20 điểm nếu sai ở Vòng Sinh Tồn
+            btn.style.background = "var(--red)";
+        }
+
+        document.getElementById("score").innerText = score;
+        document.getElementById("combo-display").innerText = `🔥 Combo: x${combo}`;
+
+        setTimeout(() => {
+            loadQuestion();
+        }, 300);
+    }
+
+    function endGame() {
+        clearInterval(timerInterval);
+        clearInterval(bgMusicInterval);
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("end-screen").style.display = "block";
+        document.getElementById("final-score").innerText = `${score} ĐIỂM`;
+    }
+</script>
+
+</body>
+</html>
